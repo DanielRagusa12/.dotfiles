@@ -1,4 +1,4 @@
-@import url("file://{{ .chezmoi.homeDir }}/.cache/wallust/waybar-colors.css");
+@import url("../../.cache/wallust/waybar-colors.css");
 
 * {
     font-family: "JetBrainsMono Nerd Font", Roboto, Arial, sans-serif;

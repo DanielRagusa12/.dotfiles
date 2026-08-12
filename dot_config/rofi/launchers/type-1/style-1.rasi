@@ -20,7 +20,7 @@ configuration {
 }
 
 /*****----- Global Properties -----*****/
-@import "{{ .chezmoi.homeDir }}/.cache/wallust/rofi-colors.rasi"
+@import "../../../../.cache/wallust/rofi-colors.rasi"
 @import                          "shared/fonts.rasi"
 
 * {
