@@ -1,0 +1,51 @@
+@import url("file://{{ .chezmoi.homeDir }}/.cache/wallust/waybar-colors.css");
+
+* {
+    font-family: "JetBrainsMono Nerd Font", Roboto, Arial, sans-serif;
+    font-size: 14px;
+}
+
+window#waybar {
+    /* Wallust background with transparency */
+    background-color: alpha(@background, 0.8); 
+    color: @foreground;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background-color: transparent;
+    color: @foreground;
+}
+
+#workspaces button.active {
+    color: @color4; /* Using a Wallust accent color */
+}
+
+#clock, #battery, #cpu, #memory, #disk, #temperature, #network, #pulseaudio, #tray {
+    padding: 0 10px;
+    margin: 0 4px;
+    /* Use color0 or color8 for a slightly different background than the bar */
+    background-color: @color0; 
+    border-radius: 10px;
+    color: @foreground;
+}
+
+#clock {
+    background-color: alpha(@color1, 0.5);
+    font-weight: bold;
+    color: @color7; 
+}
+
+#battery.charging {
+    color: @color2; /* Wallust green-ish/accent */
+}
+
+#battery.warning:not(.charging) {
+    color: @color3; /* Wallust yellow-ish/accent */
+}
+
+#battery.critical:not(.charging) {
+    color: @color1; /* Wallust red-ish/accent */
+}

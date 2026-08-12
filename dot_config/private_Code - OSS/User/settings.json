@@ -1,0 +1,21 @@
+{
+    "editor.codeActionsOnSave": {},
+
+    // --- 3. VISUAL POLISH ---
+    "workbench.sideBar.location": "right",     // Moves sidebar to the right so code doesn't jump when opening it
+    "editor.renderLineHighlight": "none",      // Removes the gray highlight on the current line
+    "editor.matchBrackets": "near",            // Only highlights brackets when the cursor is right next to them
+    "editor.scrollbar.vertical": "auto",
+    "editor.fontFamily": "JetBrainsMono Nerd Font,JetBrainsMono NF",
+    "workbench.settings.applyToAllProfiles": [
+        "editor.fontFamily"
+    ],
+    "workbench.colorTheme": "base24-fideloper",
+    "redhat.telemetry.enabled": false,
+    "workbench.editor.empty.hint": "hidden",
+    "workbench.secondarySideBar.defaultVisibility": "hidden",
+    "workbench.colorCustomizations": {
+        "editor.selectionBackground": "#ffffffab"
+
+    } // Hides scrollbar until you actually scroll
+}

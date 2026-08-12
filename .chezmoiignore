@@ -1,0 +1,110 @@
+README.md
+
+# Credentials and private machine state
+.ansible
+.ansible_vault_pass
+.aws
+.pki
+.ssh
+.terraform.d
+.wakatime
+
+# Histories, caches, and generated shell state
+.bash_history
+.cache
+.python_history
+.viminfo
+.wget-hsts
+.zsh_history
+.zcompdump-*
+
+# Tool installations and application data
+.bun
+.cargo
+.claude
+.claude.json
+.codex
+.fltk
+.gemini
+.gradle
+.local
+.minecraft
+.mozilla
+.npm
+.oh-my-zsh
+.opencode
+.pyenv
+.var
+.vscode-oss
+.vscode-oss-shared
+
+# Backups and superseded configuration
+.bashrc.bak
+.config.bak
+.zshrc.bak
+.zshrc.pre-oh-my-zsh
+backups
+rofiold
+
+# Application-managed configuration and state
+.config/Code - OSS/*
+!.config/Code - OSS/User
+.config/Code - OSS/User/*
+!.config/Code - OSS/User/settings.json
+.config/baloofileinformationrc
+.config/chezmoi
+.config/chromium
+.config/dconf
+.config/dolphinrc
+.config/falkon
+.config/go
+.config/herdr
+.config/mozilla
+.config/nwg-look
+.config/opencode/.gitignore
+.config/opencode/node_modules
+.config/opencode/package.json
+.config/opencode/package-lock.json
+.config/opencode/bun.lock
+.config/procps
+.config/proxmox
+.config/pulse
+.config/rclone
+.config/session
+.config/solaar
+.config/systemd/user/default.target.wants
+.config/tigervnc
+.config/trashrc
+.config/vlc
+.config/wal
+.config/yay
+
+# Intentionally unmanaged generated configuration
+.config/hypr/hyprpaper.conf
+.config/hypr/monitors.conf
+.config/nvim/lua/wallust_colors.lua
+
+# Retired Rofi theme gallery retained only on this machine
+.config/rofi/applets
+.config/rofi/colors
+.config/rofi/images
+.config/rofi/launchers/type-1/shared/colors.rasi
+.config/rofi/launchers/type-1/style-[2-9].rasi
+.config/rofi/launchers/type-1/style-1[0-5].rasi
+.config/rofi/launchers/type-[2-7]
+.config/rofi/powermenu
+.config/rofi/scripts
+
+# Personal files and working directories
+Downloads
+FloatProjectStuff
+ResumeStuff
+deals.md
+dope-seeds.txt
+go
+lab
+out.md
+projects
+server-golden-image
+wallpaper
+~
