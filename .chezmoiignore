@@ -32,6 +32,7 @@ README.md
 .pi/agent/**/.env
 .pi/agent/**/.env.*
 .pi/agent/**/*.log
+.pi/agent/trust.json
 .cargo
 .claude
 .claude.json
