@@ -1,11 +1,12 @@
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve, relative, isAbsolute } from "node:path";
+import { join, resolve, isAbsolute } from "node:path";
 import type { Message, Model } from "@earendil-works/pi-ai";
 import type { ThinkingLevel, ExtensionAPI, ExtensionContext, ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
 
 const APPROVED = "plannotator:plan-approved";
 const HANDOFF_COMMAND = "plannotator-handoff";
+const HANDOFF_STATE = "plannotator-handoff:pending";
 const LEVELS: ThinkingLevel[] = ["off", "minimal", "low", "medium", "high", "xhigh", "max"];
 
 type ApprovedPlan = { cwd: string; planFilePath: string; planContent: string; feedback?: string };
@@ -59,15 +60,72 @@ ${event.feedback?.trim() || "No additional reviewer notes were provided."}
 `;
 }
 
-async function runHandoff(args: string, ctx: ExtensionCommandContext): Promise<void> {
+function approvedFeedback(ctx: ExtensionContext): string | undefined {
+  const entries = ctx.sessionManager.getBranch() as any[];
+  for (let index = entries.length - 1; index >= 0; index--) {
+    const entry = entries[index];
+    if (entry?.type !== "message" || entry.message?.role !== "toolResult") continue;
+    if (entry.message.toolName !== "plannotator_submit_plan" || !entry.message.details?.approved) continue;
+    return typeof entry.message.details.feedback === "string" ? entry.message.details.feedback : undefined;
+  }
+  return undefined;
+}
+
+async function refreshPlan(event: ApprovedPlan): Promise<ApprovedPlan> {
+  const planPath = isAbsolute(event.planFilePath) ? event.planFilePath : resolve(event.cwd, event.planFilePath);
+  try {
+    const planContent = await readFile(planPath, "utf8");
+    if (planContent.trim()) return { ...event, planContent };
+  } catch {
+    // The persisted approved snapshot remains a safe fallback if the file moved.
+  }
+  return event;
+}
+
+async function recoverPending(ctx: ExtensionContext): Promise<ApprovedPlan | undefined> {
+  const entries = ctx.sessionManager.getBranch() as any[];
+  const states = entries.filter((entry) => entry?.type === "custom" && entry.customType === HANDOFF_STATE);
+  const latestState = states.at(-1)?.data;
+  if (latestState?.status === "consumed") return undefined;
+
+  let recovered = latestState?.status === "pending" ? latestState.event as Partial<ApprovedPlan> : undefined;
+  if (!recovered && states.length === 0) {
+    const marker = [...entries].reverse().find(
+      (entry) => entry?.type === "custom" && entry.customType === "plannotator-handoff",
+    );
+    if (typeof marker?.data?.planFilePath === "string") {
+      recovered = {
+        cwd: ctx.cwd,
+        planFilePath: marker.data.planFilePath,
+        planContent: "",
+        feedback: approvedFeedback(ctx),
+      };
+    }
+  }
+
+  if (!recovered || typeof recovered.cwd !== "string" || typeof recovered.planFilePath !== "string") return undefined;
+  const planPath = isAbsolute(recovered.planFilePath) ? recovered.planFilePath : resolve(recovered.cwd, recovered.planFilePath);
+  if (!isInside(recovered.cwd, planPath)) return undefined;
+  const event: ApprovedPlan = {
+    cwd: recovered.cwd,
+    planFilePath: recovered.planFilePath,
+    planContent: typeof recovered.planContent === "string" ? recovered.planContent : "",
+    feedback: typeof recovered.feedback === "string" ? recovered.feedback : undefined,
+  };
+  const refreshed = await refreshPlan(event);
+  return refreshed.planContent.trim() ? refreshed : undefined;
+}
+
+async function runHandoff(pi: ExtensionAPI, _args: string, ctx: ExtensionCommandContext): Promise<void> {
   if (processing || !pending) return;
   processing = true;
-  const event = pending;
-  pending = undefined;
+  let event = pending;
   let handoffDir: string | undefined;
+  let markedConsumed = false;
   try {
     await ctx.waitForIdle();
     if (ctx.mode !== "tui") throw new Error("Automatic external handoff requires interactive Pi mode.");
+    event = await refreshPlan(event);
 
     const models = choices(ctx);
     if (!models.length) throw new Error("No models are available for implementation.");
@@ -93,6 +151,8 @@ async function runHandoff(args: string, ctx: ExtensionCommandContext): Promise<v
     const parentSession = ctx.sessionManager.getSessionFile();
     const sourcePlan = isAbsolute(event.planFilePath) ? event.planFilePath : resolve(event.cwd, event.planFilePath);
 
+    pi.appendEntry(HANDOFF_STATE, { status: "consumed", planFilePath: event.planFilePath });
+    markedConsumed = true;
     const result = await ctx.newSession({
       parentSession,
       setup: async (sessionManager) => {
@@ -110,8 +170,17 @@ async function runHandoff(args: string, ctx: ExtensionCommandContext): Promise<v
         replacementCtx.ui.notify(`Implementation session started with ${selectedModel.name ?? selectedModel.id} (${level}).`, "info");
       },
     });
-    if (result.cancelled) await rm(dir, { recursive: true, force: true });
+    if (result.cancelled) {
+      pi.appendEntry(HANDOFF_STATE, { status: "pending", event });
+      markedConsumed = false;
+      await rm(dir, { recursive: true, force: true });
+    } else {
+      pending = undefined;
+    }
   } catch (error) {
+    if (markedConsumed) {
+      try { pi.appendEntry(HANDOFF_STATE, { status: "pending", event }); } catch { /* old session may already be replaced */ }
+    }
     ctx.ui.notify(`Plannotator handoff failed: ${error instanceof Error ? error.message : String(error)}`, "error");
   } finally {
     if (handoffDir) await rm(handoffDir, { recursive: true, force: true });
@@ -120,7 +189,11 @@ async function runHandoff(args: string, ctx: ExtensionCommandContext): Promise<v
 }
 
 export default function (pi: ExtensionAPI): void {
-  pi.on("session_start", (_event, ctx) => { activeCtx = ctx; });
+  pi.on("session_start", async (_event, ctx) => {
+    activeCtx = ctx;
+    pending = await recoverPending(ctx);
+    if (pending) ctx.ui.notify(`Recovered pending Plannotator handoff for ${pending.planFilePath}.`, "info");
+  });
   pi.on("session_shutdown", () => { activeCtx = undefined; });
 
   pi.events.on(APPROVED, (raw) => {
@@ -132,6 +205,7 @@ export default function (pi: ExtensionAPI): void {
       return;
     }
     pending = { cwd: event.cwd, planFilePath: event.planFilePath, planContent: event.planContent, feedback: typeof event.feedback === "string" ? event.feedback : undefined };
+    pi.appendEntry(HANDOFF_STATE, { status: "pending", event: pending });
     // sendUserMessage() deliberately bypasses command dispatch. Sending
     // `/${HANDOFF_COMMAND}` here would therefore hand the literal command to
     // the model instead of invoking the registered command. New-session APIs
@@ -142,7 +216,7 @@ export default function (pi: ExtensionAPI): void {
 
   pi.registerCommand(HANDOFF_COMMAND, {
     description: "Start a fresh implementation session from an approved Plannotator plan",
-    handler: async (args, ctx) => runHandoff(args, ctx),
+    handler: async (args, ctx) => runHandoff(pi, args, ctx),
   });
 
   // Add the next action to Plannotator's external-handoff result without

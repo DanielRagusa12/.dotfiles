@@ -1,6 +1,7 @@
 ---
 name: project-memory-init
 description: Scaffold concise, persistent project memory and its conservative cleanup skill. Use when a user asks to initialize project memory in a repository or directory.
+disable-model-invocation: true
 ---
 
 # Initialize Project Memory
