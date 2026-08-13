@@ -17,5 +17,7 @@
     "workbench.colorCustomizations": {
         "editor.selectionBackground": "#ffffffab"
 
-    } // Hides scrollbar until you actually scroll
+    }, // Hides scrollbar until you actually scroll
+    "extensions.autoUpdate": false,
+    "extensions.autoCheckUpdates": false
 }
