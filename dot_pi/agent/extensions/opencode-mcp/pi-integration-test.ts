@@ -1,0 +1,15 @@
+import { spawn } from "node:child_process";
+import { once } from "node:events";
+import { join } from "node:path";
+const child = spawn("pi", ["--mode", "rpc", "--no-session", "-e", join(import.meta.dir, "index.ts")], { stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, HOME: process.env.HOME } });
+let stdout = "", stderr = "";
+child.stdout.on("data", (data) => stdout += data);
+child.stderr.on("data", (data) => stderr += data);
+child.stdin.write('{"type":"get_state"}\n{"type":"get_commands"}\n');
+setTimeout(() => child.stdin.end(), 500);
+const [code] = await once(child, "exit") as [number];
+if (code !== 0) throw new Error(`pi RPC smoke failed (${code})\n${stderr}`);
+if (!stdout.includes('"type"')) throw new Error(`No RPC output: ${stdout}\n${stderr}`);
+if (!stdout.includes('"name":"mcp"')) throw new Error(`MCP command was not registered: ${stdout}\n${stderr}`);
+if (/extension_error|Error loading extension/i.test(stdout + stderr)) throw new Error(`Extension error: ${stdout}\n${stderr}`);
+console.log("Pi RPC smoke passed");

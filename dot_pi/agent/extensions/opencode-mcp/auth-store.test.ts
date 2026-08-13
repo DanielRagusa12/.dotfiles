@@ -1,0 +1,4 @@
+import { afterEach, describe, expect, test } from "bun:test";
+import { mkdtemp, rm, stat } from "node:fs/promises"; import { tmpdir } from "node:os"; import { join } from "node:path"; import { AuthStore } from "./auth-store.ts";
+let dirs: string[]=[]; afterEach(async()=>{for(const d of dirs) await rm(d,{recursive:true,force:true})});
+describe("auth store",()=>{ test("serializes concurrent updates, URL-binds, redacts, and uses 0600",async()=>{const d=await mkdtemp(join(tmpdir(),"mcp-auth-"));dirs.push(d);const p=join(d,"auth.json"), a=new AuthStore(p), b=new AuthStore(p);await Promise.all(Array.from({length:20},(_,i)=>(i%2?a:b).update(`s${i}`,{tokens:{accessToken:`token-${i}`}},`https://${i}`)));expect(Object.keys(await a.all())).toHaveLength(20);expect(await a.getForUrl("s1","https://wrong")).toBeUndefined();expect(JSON.stringify(await a.redacted())).not.toContain("token-1");expect((await stat(p)).mode & 0o777).toBe(0o600);}); });

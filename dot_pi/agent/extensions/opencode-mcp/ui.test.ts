@@ -1,0 +1,1 @@
+import { expect,test } from "bun:test"; import { parseWords } from "./ui.ts"; test("command argument parsing",()=>{expect(parseWords(`a "b c" 'd e'`)).toEqual(["a","b c","d e"]);expect(()=>parseWords(`"x`)).toThrow("Unterminated");});

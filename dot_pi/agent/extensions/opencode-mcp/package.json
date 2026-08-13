@@ -1,0 +1,29 @@
+{
+  "name": "pi-opencode-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "apply:sdk-patch": "patch -p1 -N -d node_modules/@modelcontextprotocol/sdk < patches/modelcontextprotocol-sdk-1.29.0.patch",
+    "check": "tsc --noEmit",
+    "test": "bun test",
+    "test:pi": "bun pi-integration-test.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "effect": "4.0.0-beta.83",
+    "jsonc-parser": "3.3.1",
+    "open": "10.1.2"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.9",
+    "typescript": "5.9.3"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "0.84.1",
+    "typebox": "1.3.7"
+  },
+  "pi": {
+    "extensions": ["./index.ts"]
+  }
+}
