@@ -97,7 +97,8 @@ rofiold
 
 # Intentionally unmanaged generated configuration
 .config/hypr/hyprpaper.conf
-.config/hypr/monitors.conf
+.config/hypr/monitors.lua
+.config/hypr/wallust-colors.lua
 .config/nvim/lua/wallust_colors.lua
 
 # Retired Rofi theme gallery retained only on this machine

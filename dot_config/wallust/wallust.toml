@@ -44,7 +44,7 @@ check_contrast = true
 # target: ABSOLUTE path in which to place a file with generated templated values.
 # ¡ If either one is a directory, then both SHOULD be one. !
 # zathura = { template = 'zathura', target = '~/.config/zathura/zathurarc' }
-hyprland = { template = 'hypr.conf', target = '~/.cache/wallust/hyprland-colors.conf' }
+hyprland = { template = 'hypr.lua', target = '~/.config/hypr/wallust-colors.lua' }
 waybar = { template = 'waybar.css', target = '~/.cache/wallust/waybar-colors.css' }
 kitty = { template = 'kitty.conf', target = '~/.cache/wallust/colors-kitty.conf' }
 rofi = { template = 'rofi.rasi', target = '~/.cache/wallust/rofi-colors.rasi' }
@@ -52,3 +52,4 @@ nvim = { template = 'colors-nvim.lua', target = '~/.config/nvim/lua/wallust_colo
 
 [commands]
 reload_waybar = "killall -SIGUSR2 waybar"
+reload_hyprland = "hyprctl reload"

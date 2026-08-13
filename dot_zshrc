@@ -33,39 +33,34 @@ alias copy="kitty +kitten clipboard"
 
 # Wallpaper & Theme Switcher
 function wal() {
-    # 0. Validate Input
     if [ -z "$1" ]; then
         echo "Usage: wal <path/to/image>"
         return 1
     fi
 
     local img=$(readlink -f "$1")
-    
-    # 1. Update Wallpaper (Hyprland)
-    hyprctl hyprpaper preload "$img"
-    
-    for monitor in $(hyprctl monitors | grep "Monitor" | awk '{print $2}'); do
-        hyprctl hyprpaper wallpaper "$monitor,$img"
+    if [ ! -f "$img" ]; then
+        echo "wal: image not found: $1" >&2
+        return 1
+    fi
+
+    # Hyprpaper 0.8 loads images directly; preload/unload IPC was removed.
+    local monitor
+    for monitor in $(hyprctl monitors | awk '/^Monitor / {print $2}'); do
+        hyprctl hyprpaper wallpaper "$monitor,$img,cover" || return 1
     done
-    
-    # Write config for persistence
+
     cat > ~/.config/hypr/hyprpaper.conf <<EOF
-preload = $img
-wallpaper = ,$img
+wallpaper {
+    monitor =
+    path = $img
+    fit_mode = cover
+}
 splash = false
 EOF
-    
-    hyprctl hyprpaper unload unused
 
-    # 2. Generate Colors (Wallust)
-    # This generates ~/.config/nvim/lua/wallust_colors.lua (based on our previous setup)
-    wallust run "$img"
-
-    # 3. Reload Applications
-    # Reload Waybar
+    wallust run "$img" || return 1
     killall -SIGUSR2 waybar
-    
-    # Reload Hyprland Config
     hyprctl reload
 }
 

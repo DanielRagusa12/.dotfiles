@@ -12,26 +12,33 @@ alias grep='grep --color=auto'
 PS1='[\u@\h \W]\$ '
 
 function wal() {
+    if [ -z "$1" ]; then
+        echo "Usage: wal <path/to/image>"
+        return 1
+    fi
+
     local img=$(readlink -f "$1")
+    if [ ! -f "$img" ]; then
+        echo "wal: image not found: $1" >&2
+        return 1
+    fi
 
-    # 1. Preload image
-    hyprctl hyprpaper preload "$img"
-
-    # 2. LOOP: Apply to DP-1, DP-2, etc. individually
-    for monitor in $(hyprctl monitors | grep "Monitor" | awk '{print $2}'); do
-        hyprctl hyprpaper wallpaper "$monitor,$img"
+    # Hyprpaper 0.8 loads images directly; preload/unload IPC was removed.
+    local monitor
+    for monitor in $(hyprctl monitors | awk '/^Monitor / {print $2}'); do
+        hyprctl hyprpaper wallpaper "$monitor,$img,cover" || return 1
     done
 
-    # 3. Save "wildcard" config for next reboot (Simpler for startup)
     cat > ~/.config/hypr/hyprpaper.conf <<EOF
-preload = $img
-wallpaper = ,$img
+wallpaper {
+    monitor =
+    path = $img
+    fit_mode = cover
+}
 splash = false
 EOF
 
-    # 4. Clean up RAM and reload themes
-    hyprctl hyprpaper unload unused
-    wallust run "$img"
+    wallust run "$img" || return 1
     killall -SIGUSR2 waybar
     hyprctl reload
 }
