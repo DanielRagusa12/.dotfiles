@@ -1,0 +1,25 @@
+{
+  "name": "pi-opencode-web-tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "test:pi": "sh -c 'printf \"{\\\"type\\\":\\\"get_state\\\"}\\n\" | pi --mode rpc --no-session -e \"$PWD/pi-integration-test.ts\" >/tmp/pi-opencode-web-test.out 2>/tmp/pi-opencode-web-test.err && grep -q OPENCODE_WEB_INTEGRATION_OK /tmp/pi-opencode-web-test.err'",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "htmlparser2": "8.0.2",
+    "turndown": "7.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.9",
+    "@types/turndown": "5.0.6",
+    "typescript": "5.9.3"
+  },
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

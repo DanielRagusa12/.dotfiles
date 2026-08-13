@@ -81,7 +81,7 @@ function vf() {
 
 
 # --- ENV Vars ---
-
+export PATH=~/.npm-global/bin:$PATH
 
 export PYENV_ROOT="$HOME/.pyenv"
 if [[ -d $PYENV_ROOT/bin ]]; then

@@ -20,6 +20,18 @@ README.md
 
 # Tool installations and application data
 .bun
+
+# Pi credentials, session history, generated state, and installed artifacts
+.pi/agent/auth.json
+.pi/agent/models-store.json
+.pi/agent/sessions
+.pi/agent/bin
+.pi/agent/npm
+.pi/agent/git
+.pi/agent/**/node_modules
+.pi/agent/**/.env
+.pi/agent/**/.env.*
+.pi/agent/**/*.log
 .cargo
 .claude
 .claude.json
