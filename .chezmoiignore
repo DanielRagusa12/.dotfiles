@@ -25,7 +25,9 @@ AGENTS.md
 # Pi credentials, session history, generated state, and installed artifacts
 .pi/agent/auth.json
 .pi/agent/models-store.json
+.pi/agent/mcp-auth.json
 .pi/agent/sessions
+.pi/agent/opencode-subagents
 .pi/agent/bin
 .pi/agent/npm
 .pi/agent/git
