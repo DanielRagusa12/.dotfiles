@@ -73,6 +73,44 @@ function vf() {
     fi
 }
 
+function codeline() {
+    local dep file selection line fd_cmd
+    local missing=()
+
+    for dep in fzf rg bat code; do
+      command -v "$dep" >/dev/null 2>&1 || missing+=("$dep")
+    done
+
+    if command -v fd >/dev/null 2>&1; then
+      fd_cmd=fd
+    elif command -v fdfind >/dev/null 2>&1; then
+      fd_cmd=fdfind
+    else
+      missing+=("fd")
+    fi
+
+    if ((${#missing[@]})); then
+      printf 'codeline: missing required commands:\n' >&2
+      printf '  - %s\n' "${missing[@]}" >&2
+      return 1
+    fi
+
+    file=$(
+      "$fd_cmd" --type f --hidden --exclude .git |
+        fzf --preview 'bat --color=always --style=numbers --line-range=:500 -- {}'
+    ) || return
+
+    selection=$(
+      FILE="$file" fzf \
+        --delimiter=: \
+        --preview 'bat --color=always --style=numbers --highlight-line {1} --line-range {1}:+20 -- "$FILE"' \
+        < <(rg --line-number --no-heading '^' -- "$file")
+    ) || return
+
+    line=${selection%%:*}
+    code --goto "$file:$line"
+}
+
 
 
 # --- ENV Vars ---
