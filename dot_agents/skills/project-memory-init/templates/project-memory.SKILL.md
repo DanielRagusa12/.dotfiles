@@ -27,4 +27,3 @@ Do not record:
 
 Keep entries terse and specific. Cite relevant project-relative paths when they help future verification. Update or replace a superseded entry rather than adding a duplicate. Preserve useful existing entries unless current evidence disproves them.
 
-Never stage or commit memory files.

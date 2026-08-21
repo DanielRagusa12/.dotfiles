@@ -31,6 +31,20 @@ alias copy="kitty +kitten clipboard"
 
 # --- Custom Functions ---
 
+function fzfrg() {
+    local selection file line
+
+    selection=$(
+        fzf --disabled \
+            --bind 'change:reload:rg --line-number --color=always {q} || true' \
+            --ansi
+    ) || return
+
+    file=${selection%%:*}
+    line=${${selection#*:}%%:*}
+    nano +"$line" -- "$file"
+}
+
 # Wallpaper & Theme Switcher
 function wal() {
     if [ -z "$1" ]; then
