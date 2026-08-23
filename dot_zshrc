@@ -33,10 +33,28 @@ alias copy="kitty +kitten clipboard"
 
 function fzfrg() {
     local selection file line
+    local rg_command='rg --line-number --color=always'
+
+    case "$1" in
+        '') ;;
+        -u)
+            rg_command+=' --hidden --no-ignore'
+            ;;
+        -h|--help)
+            echo 'Usage: fzfrg [-u]'
+            echo '  -u  include all ignored and hidden files'
+            return
+            ;;
+        *)
+            echo "fzfrg: unknown option: $1" >&2
+            echo 'Usage: fzfrg [-u]' >&2
+            return 2
+            ;;
+    esac
 
     selection=$(
         fzf --disabled \
-            --bind 'change:reload:rg --line-number --color=always {q} || true' \
+            --bind "change:reload:$rg_command {q} || true" \
             --ansi
     ) || return
 
@@ -76,15 +94,6 @@ EOF
     wallust run "$img" || return 1
     killall -SIGUSR2 waybar
     hyprctl reload
-}
-
-# Fast File Search & Edit (fzf + bat + nano)
-function vf() {
-    local file="$1"
-    local line=$(grep -n "" "$file" | fzf --delimiter ':' --preview 'bat --style=numbers --color=always --highlight-line {1} '"$file"'' | cut -d: -f1)
-    if [ -n "$line" ]; then
-        nano +$line "$file"
-    fi
 }
 
 function codeline() {
