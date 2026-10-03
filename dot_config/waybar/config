@@ -3,7 +3,7 @@
     "position": "top",
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["pulseaudio", "network", "battery", "tray"],
+    "modules-right": ["pulseaudio", "network", "tray"],
     "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate"
@@ -26,12 +26,4 @@
         "format-ethernet": " Connected",
         "format-disconnected": "⚠ Disconnected"
     },
-    "battery": {
-        "states": {
-            "warning": 30,
-            "critical": 15
-        },
-        "format": "{icon} {capacity}%",
-        "format-icons": ["", "", "", "", ""]
-    }
 }
