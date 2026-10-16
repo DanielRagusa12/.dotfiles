@@ -1,16 +1,5 @@
 -- Hyprland 0.56 Lua configuration.
 
-local palette = {
-    background = "rgb(120F13)",
-    color1 = "rgb(4E4554)",
-    color2 = "rgb(5E6AA8)",
-}
-
-local colors_ok, wallust_colors = pcall(require, "wallust-colors")
-if colors_ok and type(wallust_colors) == "table" then
-    palette = wallust_colors
-end
-
 -- Machine-local monitor configuration; the core config remains usable without it.
 pcall(require, "monitors")
 
@@ -28,12 +17,12 @@ end)
 
 hl.config({
     general = {
-        gaps_in = 5,
-        gaps_out = 20,
-        border_size = 3,
+        gaps_in = 2,
+        gaps_out = 10,
+        border_size = 0,
         col = {
-            active_border = { colors = { palette.color1, palette.color2 }, angle = 45 },
-            inactive_border = palette.background,
+            active_border = "rgb(808080)",
+            inactive_border = "rgb(000000)",
         },
         resize_on_border = false,
         allow_tearing = false,
@@ -44,6 +33,8 @@ hl.config({
         rounding_power = 2,
         active_opacity = 1.0,
         inactive_opacity = 1.0,
+        dim_inactive = true,
+        dim_strength = 0.15,
         shadow = {
             enabled = true,
             range = 4,
@@ -66,7 +57,7 @@ hl.config({
     input = {
         kb_layout = "us",
         follow_mouse = 1,
-        sensitivity = 0,
+        sensitivity = -0.3,
         touchpad = { natural_scroll = false },
     },
 })
