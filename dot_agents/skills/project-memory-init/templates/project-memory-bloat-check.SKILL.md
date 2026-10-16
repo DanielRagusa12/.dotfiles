@@ -5,7 +5,7 @@ description: Conservatively audit project memory for stale, duplicate, obvious, 
 
 # Project Memory Bloat Check
 
-Audit `.pi/skills/project-memory/MEMORY.md` conservatively. Never stage or commit files.
+Audit `.pi/skills/project-memory/MEMORY.md` conservatively. Follow the owning project's `AGENTS.md` policy for tracking and committing approved memory changes.
 
 ## 1. Review evidence
 

@@ -14,4 +14,4 @@ Perform this single initialization workflow:
 4. Report the script's `CREATED`, `UPDATED`, and `PRESERVED` results. If it reports malformed markers, stop and ask the user to repair `AGENTS.md`; do not guess.
 5. Tell the user to run `/reload` so Pi discovers the generated project skills.
 
-The script is additive and idempotent. Do not select a non-Git fallback without confirmation.
+The script is additive and idempotent. Existing memory skills receive the routing section only if `## Choose the memory scope` is absent. All existing content is preserved, including project-specific instructions and memory entries. An existing routing section is left unchanged. Do not select a non-Git fallback without confirmation.
