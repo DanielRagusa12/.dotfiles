@@ -12,7 +12,7 @@ Treat package installation, builds, updates, and first execution as potential co
 - Watch for obfuscated code, encoded payloads, unexpected network calls, secret or credential reads, environment-variable scraping, shell execution, persistence, and edits outside the package's expected files. Review published artifacts as well as repository source when practical; they can differ. Never execute suspect code to find out whether it is malicious.
 - Prefer reviewed immutable versions or full Git commit hashes and locked dependency trees. Record what was reviewed and whether it can update automatically. Branches and tags can move. Re-review updates rather than treating previous approval as permanent trust.
 - Keep unreviewed installation/build code away from credentials, SSH agents, cloud tokens, publishing permissions, and sensitive mounts. Use an isolated environment with least privilege when execution is necessary; do not assume a container alone provides this isolation.
-- If provenance is unclear, suspicious behavior appears, or required unreviewed scripts cannot be disabled, stop and ask the user before proceeding. Describe the evidence and proposed execution. Do not override integrity checks or security controls to make an install succeed. Audits, signatures, and provenance attestations are useful evidence, not guarantees against a compromised publisher.
+- If provenance is unclear, suspicious behavior appears, or required unreviewed scripts cannot be disabled, stop and ask the user before proceeding. Describe the evidence and proposed execution. Audits, signatures, and provenance attestations are useful evidence, not guarantees against a compromised publisher.
 
 ## npm supply-chain safety
 
