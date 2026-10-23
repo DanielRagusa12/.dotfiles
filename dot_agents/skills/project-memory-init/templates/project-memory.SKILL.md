@@ -1,6 +1,6 @@
 ---
 name: project-memory
-description: Read and maintain verified, durable, non-obvious project knowledge. Use when prior project findings could help or a costly-to-rediscover finding should be retained.
+description: Read and maintain verified, durable, non-obvious project knowledge. Use when prior findings could help, implementation or evidence changes affect memory, or a task yields a reusable finding.
 ---
 
 # Project Memory
@@ -17,6 +17,14 @@ Project memory lives at `<project-root>/.pi/skills/project-memory/MEMORY.md` and
 - Do not put child-repo findings in parent memory merely because child memory is missing. Create it in the owning project's standard location when a finding qualifies. If ownership is unclear, ask before writing.
 
 These rules route memory explicitly; they do not depend on Pi automatically loading child skills or switching skills after a shell `cd`.
+
+## Knowledge and temporary artifacts
+
+Persistent agent knowledge belongs only in the owning project's `.pi/skills/project-memory/MEMORY.md`. Do not create or maintain competing findings files, notebooks, or agent-docs knowledge stores, regardless of file extension.
+
+Maintain legitimate canonical project documentation and explicitly requested deliverables. Do not relabel an agent notebook as canonical documentation to bypass this rule. Ask when a document's intended role is unclear.
+
+Temporary plans, handoffs, reports, and scratch files are allowed. Default to a private, uniquely named directory in the platform's configured OS temporary storage, and pass exact paths to recipients. Do not leave temporary artifacts as permanent repository knowledge. Host policy controls temporary-file cleanup; it is not guaranteed or tied to task completion. Temporary storage is not a secret store. For handoffs across reboots, machines, or longer-lived sessions, agree on a durable artifact location explicitly, separate from project memory. Inspect existing tool-managed checkpoint/artifact paths before proposing lifecycle changes.
 
 ## Use memory
 
@@ -36,5 +44,13 @@ Do not record:
 - Facts readily available from a directory listing, manifest, nearby code, canonical project documentation, or a standard command.
 - Secrets, credentials, personal data, unverified hypotheses, task status, transient failures, logs, or narrative history.
 
-Keep entries terse and specific. Cite relevant project-relative paths when they help future verification. Update or replace a superseded entry rather than adding a duplicate. Preserve useful existing entries unless current evidence disproves them.
+Keep entries terse and specific. Cite relevant project-relative paths when they help future verification. Preserve useful existing entries unless current evidence disproves them.
+
+## Maintain memory during the task
+
+- Read relevant memory before relying on it. When implementation changes or newly verified evidence supersede an entry, correct or replace it during the same task. Do not append a contradictory update while leaving the original presented as current.
+- If evidence calls a claim into question but no replacement can be verified, explicitly mark that claim as unverified with a brief reason. Do not invent a replacement or leave the claim confidently stated. This annotation is not admission of an unverified hypothesis as a new finding.
+- Before finishing, review memory affected by the task and add newly verified, reusable, non-obvious findings that meet the admission criteria above. A trivial task need not produce an entry, and a small change does not require a full-memory audit.
+- Normal additions and verified factual corrections do not require separate bloat-cleanup approval. A narrowly scoped correction may remove a proven-invalid claim, but does not authorize unrelated pruning.
+- Discretionary removal or condensation for duplication, verbosity, low value, or historical residue requires the owning scope's `project-memory-bloat-check` skill, an exact before/after proposal, and explicit user approval.
 
