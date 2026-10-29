@@ -10,5 +10,6 @@
   "defaultThinkingLevel": "medium",
   "hideThinkingBlock": false,
   "showCacheMissNotices": true,
+  "cacheWarming": "idle",
   "enableInstallTelemetry": false
 }
