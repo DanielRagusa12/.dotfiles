@@ -9,5 +9,5 @@ Use `project-memory` when prior findings could help, changes affect memory, or a
 - Before finishing, review affected memory and retain newly verified, reusable, non-obvious findings. No forced entry or full audit for every small task.
 - Normal additions and verified factual corrections need no separate cleanup approval. Discretionary pruning or condensation requires `project-memory-bloat-check` and explicit approval of exact edits; factual correction does not authorize unrelated pruning.
 
-Track `AGENTS.md` and the project's `.pi/` folder in this repo, including skills and project memory files. Commit intentional changes to these files with the related work; do not gitignore them or leave completed memory updates uncommitted. Review staged content for secrets and exclude credentials, machine-local state, and unrelated changes. Each child repo owns and commits its own `.pi/` files.
+Follow the repository visibility policy below when deciding whether to track `.pi/`. Until that policy is verified, do not commit or push `.pi/` files. Never commit secrets, credentials, machine-local state, or unrelated changes.
 <!-- project-memory:end -->
