@@ -1,6 +1,6 @@
 -- Hyprland 0.56 Lua configuration.
 
--- Machine-local monitor configuration; the core config remains usable without it.
+-- Load the monitor layout if it is present.
 pcall(require, "monitors")
 
 local terminal = "kitty"
