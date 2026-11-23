@@ -12,44 +12,52 @@ function setup() {
   return { models, transform: handlers.get("before_provider_request") };
 }
 
+const baseModels = ["gpt-6.1-sol", "gpt-6.2-astra", "gpt-6.2-sol"];
+
 for (const provider of ["openai", "openai-codex"]) {
-  for (const [suffix, tier] of [["fast", "priority"], ["ultrafast", "ultrafast"]]) {
-    test(`${provider}/${suffix} routes to the base model and sets ${tier}`, () => {
-      const { models, transform } = setup();
-      const selection = { provider, id: `gpt-6.1-sol-${suffix}` };
-      const model = { provider, id: "gpt-6.1-sol", api: "openai-responses" };
-      const ctx = {
-        model: selection,
-        modelRegistry: {
-          find(p, id) {
-            assert.equal(p, provider);
-            assert.equal(id, model.id);
-            return model;
+  for (const baseModelId of baseModels) {
+    for (const [suffix, tier] of [["fast", "priority"], ["ultrafast", "ultrafast"]]) {
+      test(`${provider}/${baseModelId}-${suffix} routes to the base model and sets ${tier}`, () => {
+        const { models, transform } = setup();
+        const selection = { provider, id: `${baseModelId}-${suffix}` };
+        const model = { provider, id: baseModelId };
+        const ctx = {
+          model: selection,
+          modelRegistry: {
+            find(p, id) {
+              assert.equal(p, provider);
+              assert.equal(id, model.id);
+              return model;
+            },
           },
-        },
-      };
-      const virtual = models.find((entry) => entry.provider === provider && entry.id === selection.id);
-      assert.ok(virtual);
-      for (const reason of ["user", "continuation", "retry", "direct"]) {
-        assert.deepEqual(virtual.route({ thinkingLevel: "high", reason }, ctx), {
-          model, thinkingLevel: "high",
-        });
-      }
-      const payload = {
-        model: model.id,
-        input: [{ role: "user", content: "test" }],
-        tools: [{ type: "function", name: "read" }],
-        reasoning: { effort: "high" },
-        service_tier: "auto",
-      };
-      assert.deepEqual(transform({ payload }, ctx), { ...payload, service_tier: tier });
-      assert.equal(payload.service_tier, "auto", "does not mutate the original payload");
-    });
+        };
+        const virtual = models.find((entry) => entry.provider === provider && entry.id === selection.id);
+        assert.ok(virtual);
+        for (const reason of ["user", "continuation", "retry", "direct"]) {
+          assert.deepEqual(virtual.route({ thinkingLevel: "high", reason }, ctx), {
+            model, thinkingLevel: "high",
+          });
+        }
+        const payload = {
+          model: model.id,
+          input: [{ role: "user", content: "test" }],
+          tools: [{ type: "function", name: "read" }],
+          reasoning: { effort: "high" },
+          service_tier: "auto",
+        };
+        assert.deepEqual(transform({ payload }, ctx), { ...payload, service_tier: tier });
+        assert.equal(payload.service_tier, "auto", "does not mutate the original payload");
+        for (const otherId of baseModels.filter((id) => id !== baseModelId)) {
+          assert.equal(transform({ payload: { ...payload, model: otherId } }, ctx), undefined);
+        }
+        assert.equal(transform({ payload }, { model }), undefined);
+      });
+    }
   }
 }
 
-test("registers only the four intended virtual entries", () => {
-  assert.equal(setup().models.length, 4);
+test("registers only the twelve intended virtual entries", () => {
+  assert.equal(setup().models.length, 12);
 });
 
 test("leaves base selections, unrelated providers, and other requests unchanged", () => {

@@ -1,11 +1,21 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-const BASE_MODEL = "gpt-6.1-sol";
 const PROVIDERS = ["openai", "openai-codex"] as const;
-const MODES = [
-  { id: `${BASE_MODEL}-fast`, name: "GPT-6.1 Sol (Fast)", tier: "priority" },
-  { id: `${BASE_MODEL}-ultrafast`, name: "GPT-6.1 Sol (Ultra Fast)", tier: "ultrafast" },
+const BASE_MODELS = [
+  { id: "gpt-6.1-sol", name: "GPT-6.1 Sol" },
+  { id: "gpt-6.2-astra", name: "GPT-6.2 Astra" },
+  { id: "gpt-6.2-sol", name: "GPT-6.2 Sol" },
 ] as const;
+const SPEEDS = [
+  { suffix: "fast", label: "Fast", tier: "priority" },
+  { suffix: "ultrafast", label: "Ultra Fast", tier: "ultrafast" },
+] as const;
+const MODES = BASE_MODELS.flatMap((base) => SPEEDS.map((speed) => ({
+  id: `${base.id}-${speed.suffix}`,
+  name: `${base.name} (${speed.label})`,
+  baseModelId: base.id,
+  tier: speed.tier,
+})));
 
 export default function (pi: ExtensionAPI) {
   for (const provider of PROVIDERS) {
@@ -16,8 +26,8 @@ export default function (pi: ExtensionAPI) {
         name: mode.name,
         thinkingLevels: ["off", "minimal", "low", "medium", "high", "xhigh", "max"],
         route(request, ctx) {
-          const model = ctx.modelRegistry.find(provider, BASE_MODEL);
-          if (!model) throw new Error(`Model ${provider}/${BASE_MODEL} is not in the catalog`);
+          const model = ctx.modelRegistry.find(provider, mode.baseModelId);
+          if (!model) throw new Error(`Model ${provider}/${mode.baseModelId} is not in the catalog`);
           // Pi clamps the selected thinking level to what the physical model supports.
           return { model, thinkingLevel: request.thinkingLevel };
         },
@@ -33,7 +43,7 @@ export default function (pi: ExtensionAPI) {
 
     const payload = event.payload;
     if (typeof payload !== "object" || payload === null || Array.isArray(payload)) return;
-    if (!("model" in payload) || payload.model !== BASE_MODEL) return;
+    if (!("model" in payload) || payload.model !== mode.baseModelId) return;
 
     // Preserve tools, reasoning, cache settings, and changes from earlier hooks.
     return { ...payload, service_tier: mode.tier };
