@@ -32,6 +32,19 @@ window#waybar {
     color: @foreground;
 }
 
+#custom-voxtype {
+    padding: 0 10px;
+    font-weight: bold;
+}
+
+#custom-voxtype.recording {
+    color: #ff5555;
+}
+
+#custom-voxtype.transcribing {
+    color: #f1c75b;
+}
+
 #clock {
     background-color: alpha(@color1, 0.5);
     font-weight: bold;

@@ -3,10 +3,11 @@
   "theme": "dark",
   "packages": [
     "npm:@plannotator/pi-extension@0.27.1",
-    "~/.pi/agent/local-packages/pi-subagents"
+    "~/.pi/agent/local-packages/pi-subagents",
+    "~/.pi/agent/local-packages/pi-claude-code"
   ],
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-6.2-sol-fast",
+  "defaultProvider": "claude-code",
+  "defaultModel": "claude-opus-5-5",
   "defaultThinkingLevel": "medium",
   "hideThinkingBlock": false,
   "showCacheMissNotices": true,

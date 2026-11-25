@@ -3,7 +3,21 @@
     "position": "top",
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["pulseaudio", "network", "tray"],
+    "modules-right": ["custom/voxtype", "pulseaudio", "network", "tray"],
+    "custom/voxtype": {
+        "exec-if": "test -x \"$HOME/.local/bin/voxtype\"",
+        "exec": "\"$HOME/.local/bin/voxtype\" status --follow --format json",
+        "return-type": "json",
+        "format": "{icon}",
+        "format-icons": {
+            "default": "",
+            "idle": "",
+            "stopped": "",
+            "recording": "● REC",
+            "transcribing": "Transcribing…"
+        },
+        "tooltip": false
+    },
     "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate"

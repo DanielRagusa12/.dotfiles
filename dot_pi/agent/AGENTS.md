@@ -1,5 +1,9 @@
 # Global Pi Instructions
 
+## Git attribution
+
+When creating Git commits or pull requests, use the user's configured Git identity. Do not add AI authors or co-authors, AI attribution bylines, or AI session links.
+
 ## Package supply-chain warning
 
 Treat package installation, builds, updates, and first execution as potential code execution. Supply-chain attacks can use stolen maintainer accounts, malicious releases of legitimate packages, typosquatting, dependency confusion, poisoned build recipes, and compromised upstream downloads. Popularity, a familiar name, no dependencies, or a clean vulnerability audit does not establish safety.

@@ -118,6 +118,11 @@ hl.bind(main_mod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(main_mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(main_mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
+-- Hold Insert to dictate while Discord's Push to Mute is active.
+hl.bind("Insert", hl.dsp.pass({ window = "class:^discord$" }))
+hl.bind("Insert", hl.dsp.exec_cmd("$HOME/.local/bin/voxtype record start"))
+hl.bind("Insert", hl.dsp.exec_cmd("$HOME/.local/bin/voxtype record stop"), { release = true })
+
 local repeat_locked = { locked = true, repeating = true }
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), repeat_locked)
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), repeat_locked)
