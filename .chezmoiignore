@@ -47,6 +47,9 @@ AGENTS.md
 .agents/skills/orchestration
 .agents/skills/computer-use
 .pi/agent/extensions/orca-*.ts
+
+# Herdr's Pi integration; Herdr overwrites it on install and update
+.pi/agent/extensions/herdr-agent-state.ts
 .cargo
 .claude
 .claude.json
