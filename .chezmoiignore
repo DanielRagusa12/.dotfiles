@@ -39,6 +39,14 @@ AGENTS.md
 .pi/agent/**/.env.*
 .pi/agent/**/*.log
 .pi/agent/trust.json
+
+# Orca installs and updates these itself and tracks their digests
+.agents/.orca-skill-digests
+.agents/skills/orca-cli
+.agents/skills/orca-computer-use
+.agents/skills/orchestration
+.agents/skills/computer-use
+.pi/agent/extensions/orca-*.ts
 .cargo
 .claude
 .claude.json
