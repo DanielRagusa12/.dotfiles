@@ -50,6 +50,11 @@ AGENTS.md
 
 # Herdr's Pi integration; Herdr overwrites it on install and update
 .pi/agent/extensions/herdr-agent-state.ts
+
+# Herdr and Orca OpenCode integrations, managed by those apps
+.config/opencode/plugins/herdr-agent-state.js
+.config/opencode/plugins/orca-opencode-status.js
+.config/opencode/plugins/orca-opencode-status-tui
 .cargo
 .claude
 .claude.json
