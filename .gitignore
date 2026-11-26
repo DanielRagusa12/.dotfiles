@@ -1,2 +1,5 @@
 .pi/
 AGENTS.md
+
+# Pi rewrites this with machine state (deviceId, changelog version); kept locally only
+dot_pi/agent/settings.json
